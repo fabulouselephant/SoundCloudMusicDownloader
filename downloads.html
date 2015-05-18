@@ -1,0 +1,62 @@
+<!doctype html5>
+<html ng-app="Downloads">
+<head>
+  <link rel="stylesheet" href="http://fonts.googleapis.com/css?family=Roboto:400,500,700"/>
+  <link rel="stylesheet" href="css/lib/bootstrap.css"/>
+  <link rel="stylesheet" href="css/lib/bootstrap-theme.css"/>
+  <link rel="stylesheet" href="css/styles.css"/>
+
+  <script src="js/lib/angular.min.js"></script>
+  <script src="js/lib/angular-animate.js"></script>
+  <script src="js/lib/async.js"></script>
+  <script src="js/lib/jquery.js"></script>
+  <script src="js/lib/bootstrap.js"></script>
+</head>
+<body>
+  <main ng-controller="DownloadsCtrl as ctrl">
+    <table ng-if="!!downloads.length">
+      <tr>
+        <th width="50"></th>
+        <th>Track</th>
+        <th width="60">Progress</th>
+        <th width="55">Duration</th>
+        <th width="50"></th>
+      </tr>
+      <tr class="track" ng-repeat="track in downloads">
+        <td>
+          <div class="wrap">
+            <span ng-if="track.complete" class="glyphicon glyphicon-play-circle button" ng-click="open(track)" tooltip title="Play"></span><!--
+         --><span ng-if="track.complete" class="glyphicon glyphicon-search button" ng-click="show(track)" tooltip title="Show in folder"></span>
+          </div>
+        </td>
+        <td class="trackTitle" width="80%">
+          <div class="wrap">
+            {{track.track_title}}
+          </div>
+        </td>
+        <td class="trackProgress" width="20%">
+          <div class="wrap">
+            <div ng-if="track.progress" class="progress-bar progress-bar-success" style="width: {{track.progress}}%;"></div>
+          </div>
+        </td>
+        <td class="trackDuration" align="center">
+          <div class="wrap">
+            {{ ('0' + Math.floor(track.track_duration/1000/60)).slice(-2) }}:<!--
+         -->{{ ('0' + Math.floor(track.track_duration/1000%60)).slice(-2) }}
+          </div>
+        </td>
+        <td>
+          <div class="wrap">
+            <span class="glyphicon glyphicon-remove-circle button" ng-click="del(track)" tooltip title="Delete track"></span><!--
+         --><span ng-if="track.complete" class="glyphicon glyphicon-repeat button" ng-click="redownload(track)" tooltip title="Redownload track"></span>
+          </div>
+        </td>
+      </tr>
+    </table>
+    <p ng-if="!downloads.length" class="noTracks bg-warning">
+      No tracks have been downloaded yet o_O
+    </p>
+  </main>
+  <script src="js/downloads.js"></script>   
+</body>
+</html>

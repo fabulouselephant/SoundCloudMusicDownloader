@@ -1,0 +1,112 @@
+body {
+  font-family: "Roboto";
+  font-size: 12px;
+}
+
+main {
+  padding: 10px;
+  min-width: 450px;
+}
+
+.noTracks {
+  margin: 0;
+  padding: 20px;
+  text-align: center;
+}
+
+.progress-bar {
+  border-radius: 3px;
+  height: 10px;
+}
+
+table {
+  width: 100%;
+  font-size: 14px;
+  table-layout: fixed;
+}
+
+td, th {
+  padding: 3px;
+}
+
+td .wrap {
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+}
+
+th {
+  font-size: 12px;
+}
+
+.button {
+  width: 22px;
+  height: 22px;
+  line-height: 24px;
+  font-size: 16px;
+  cursor: pointer;
+  text-align: center;
+}
+
+.button:hover {
+  border-radius: 50%;
+  background: #444;
+  color: #fff;
+}
+
+.track.ng-enter, 
+.track.ng-leave,
+.track.ng-enter td, 
+.track.ng-leave td,
+.track.ng-enter .wrap, 
+.track.ng-leave .wrap { 
+  transition: 300ms ease-out all;
+} 
+
+.track.ng-leave .wrap { 
+  overflow: hidden;
+  max-height: 30px;
+} 
+.track.ng-leave.ng-leave-active .wrap {
+  max-height: 0;
+}
+
+.track.ng-enter .wrap {
+  overflow: hidden;
+  max-height: 0;
+}
+.track.ng-enter.ng-enter-active .wrap {
+  max-height: 30px;
+}
+
+.track.ng-leave {
+  opacity: 1;
+}  
+.track.ng-leave.ng-leave-active {
+  opacity: 0;
+}
+
+.track.ng-enter {
+  opacity: 0;
+}  
+.track.ng-enter.ng-enter-active {
+  opacity: 1;
+}
+
+.track.ng-leave td {
+  padding-top: 3px;
+  padding-bottom: 3px;
+}
+.track.ng-leave.ng-leave-active td {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+
+.track.ng-enter td {
+  padding-top: 0;
+  padding-bottom: 0;
+}
+.track.ng-enter.ng-enter-active td {
+  padding-top: 3px;
+  padding-bottom: 3px;
+}

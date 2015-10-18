@@ -12,6 +12,7 @@ app.controller("DownloadsCtrl", function($scope) {
       track_title: track.track_title,
       download_id: track.download_id, 
       complete: track.complete
+      //deleted: track.deleted
     }
   });
 
@@ -77,7 +78,7 @@ app.controller("DownloadsCtrl", function($scope) {
     var tracks = getTracks();
 
     tracks.forEach(function(track, i) {
-      if (!track.download_id) {
+      if (!track.download_id || track.deleted) {
         return;
       }
 

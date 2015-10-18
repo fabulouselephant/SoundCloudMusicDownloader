@@ -6,6 +6,7 @@ const icon = "\
 
 const CLIENT_ID = '5c120c30964a7647d2fedbb38f97bf63'
 const buttonNormal = '<button class="sc-button sc-button-small sc-button-responsive" style="' + icon + '"></button>'
+const buttonNormalAligned = '<button class="sc-button sc-button-small sc-button-responsive" style="' + icon + 'vertical-align:top;"></button>'
 const buttonMedium = '<button class="sc-button sc-button-medium sc-button-responsive sc-button-icon" style="' + icon + '"></button>'
 const buttonSmall = '<button class="sc-button sc-button-small sc-button-responsive sc-button-icon" style="' + icon + '" ></button>'
 
@@ -31,10 +32,18 @@ var selectors = [{
   buttons    : '.soundActions__small .sc-button-group-small:first-child',
   link       : '.soundTitle__title',
   buttonHTML : buttonNormal
-}, {
-  track   : '.l-listen-wrapper',
+},{
+  track      : '.l-listen-wrapper',
   buttons    : '.soundActions__medium .sc-button-group-medium:first-child',
   buttonHTML : buttonMedium
+}, {
+  track      : '.collection:not(.m-overview)',
+  buttons    : '.collectionSection__actions .collectionSection__action:first-child',
+  buttonHTML : buttonNormal
+}, {
+  track      : '.l-main.g-main-scroll-area',
+  buttons    : '.userNetwork__likeActions',
+  buttonHTML : buttonNormalAligned
 }];
 
 selectors.forEach(function(selector) {
@@ -54,26 +63,50 @@ function addDownloadButton($sound, selector) {
 
   var link;
   var url = document.location.href;
+  var parts = url.split('/');
+  var user;
 
   if (selector.link) {
-    link = $sound.find(selector.link).attr("href");
+    link = $sound.find(selector.link).attr('href');
     url = document.location.origin + link;
   }
+  else if (parts[parts.length-1] == "likes") {
+    if (parts[parts.length-2] == "you") {
+      user = $('.userNav__usernameButton').attr('href');
+      url = document.location.origin + user;
+      SC.get('/resolve.json', {url: url}, function(data) {
+        user = data.id;
+      });
+    } else {
+      user = parts[parts.length-2];
+    }
+  }
+
   $buttons.append($button);
   $button.on('click', function() { 
-    SC.get('/resolve.json', {url: url}, function(data) {
-      if(data.kind == "track" && data && data.stream_url) {
-        sendTrackData(data);
-      } else if(data.kind == "playlist") {
+    if (!user) {
+      SC.get('/resolve.json', {url: url}, function(data) {
+        if (data.kind == "track" && data && data.stream_url) {
+          sendTrackData(data);
+        } else if (data.kind == "playlist") {
           data.tracks.forEach(function(track) {
             if (track && track.stream_url) {
               sendTrackData(track);
             }
           });
-      } else {
-        $button.css('background', 'red');
-      }
-    });  
+        } else {
+          $button.css('background', 'red');
+        }
+      });  
+    } else {
+      SC.get('/users/' + user + '/favorites', function(likes) {
+        likes.forEach(function(track) {
+          if (track && track.stream_url) {
+            sendTrackData(track);
+          }
+        });
+      });
+    }
   });
 }
 

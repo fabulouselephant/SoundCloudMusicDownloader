@@ -17,12 +17,17 @@ chrome.runtime.onMessage.addListener(function(message, sender, callback) {
   }
 
   if (message.type == 'delete') {
-    var track = message.data;
-    removeFromQueue(track);
-    removeFromTracks(track);
+    var track = message.data; 
+    console.log(track);
 
     if (track.download_id) {
-      chrome.downloads.cancel(track.download_id);
+      chrome.downloads.cancel(track.download_id, function() {
+        removeFromQueue(track);
+        removeFromTracks(track);
+      });
+    } else {
+      removeFromQueue(track);
+      removeFromTracks(track);
     }
   }
 });
@@ -32,6 +37,7 @@ chrome.downloads.onChanged.addListener(function(item) {
     downloadsAmount = res || 0;
   });
 
+  console.log(item);
   var tracks = getTracks();
   var track;
 
@@ -42,6 +48,9 @@ chrome.downloads.onChanged.addListener(function(item) {
     }
   }
 
+  if(track.deleted) {
+    removeFromTracks(track);
+  }
   if (!track || !item.state) {
     return;
   }
@@ -50,7 +59,6 @@ chrome.downloads.onChanged.addListener(function(item) {
       item.state.current == 'interrupted' ||
       item.error) {
     
-    console.log("complete download" + track);
     occupied = false;
     downloadsAmount++;
 
@@ -124,6 +132,18 @@ function getTracksFromQueue() {
   return tracks;
 }
 
+function setDeletedTrack(track) {
+  console.log(track);
+  var tracks = getTracks();
+  for (var i = 0; i < tracks.length; i++) {
+    if (track.track_id == tracks[i].track_id) {
+        tracks[i].deleted = true;
+        console.log(tracks[i]);
+        break;
+    }
+  }  
+}
+
 function getTracks() {
   var tracks = localStorage.getItem('tracks');
   if (tracks) {
@@ -186,7 +206,7 @@ function download(track) {
   console.log("download" + track.track_title);
 
   var filename = track.track_title;
-  filename = filename.replace(/[^a-z0-9-!()&\s\[\]]/gi, '');
+  filename = filename.replace(/[^a-zа-яёЁїЇ0-9-!(){}&\s\[\]]/gi, '');
   filename = filename + '.mp3';
 
   chrome.downloads.download({

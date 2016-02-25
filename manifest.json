@@ -2,7 +2,7 @@
   "manifest_version": 2,
   "name": "SoundCloud Music Downloader",
   "description": "Download tracks and playlists from Soundcloud to your hard drive with one click.",
-  "version": "0.0.7",
+  "version": "0.0.10",
    "icons": {
       "16":"icon.png",
       "48":"icon.png",

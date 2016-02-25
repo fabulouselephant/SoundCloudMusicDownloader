@@ -99,11 +99,12 @@ function addDownloadButton($sound, selector) {
         }
       });  
     } else {
-      SC.get('/users/' + user + '/favorites', function(likes) {
+      var page_number = 200;
+      SC.get('/users/' + user + '/favorites', {limit: page_number}, function(likes) {
         likes.forEach(function(track) {
           if (track && track.stream_url) {
             sendTrackData(track);
-          }
+          };
         });
       });
     }
@@ -111,7 +112,8 @@ function addDownloadButton($sound, selector) {
 }
 
 function sendTrackData(track) {
-  var stream_url = track.stream_url;
+  console.log(track);
+  var stream_url = track.uri;
   var track_duration = track.duration;
   var track_title = track.title;
   var track_id = track.id;

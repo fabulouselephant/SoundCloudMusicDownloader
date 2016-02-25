@@ -1,1 +1,1 @@
-#SoundCloud music downloader
+#SoundCloud Music Downloader
